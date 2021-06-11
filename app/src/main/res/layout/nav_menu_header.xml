@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#F3E77D"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/nav_head_profile_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="#000000"
+            app:civ_border_width="6dp"
+            app:civ_shadow="true"
+            app:civ_shadow_radius="10dp"
+            app:civ_shadow_color="#F6A732"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <TextView
+        android:id="@+id/nav_head_profile_name"
+        android:layout_width="match_parent"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/cherry_cream_soda"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/nav_head_profile_email"
+        android:layout_width="match_parent"
+        android:textSize="15sp"
+        android:textColor="#4A4A4A"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/cherry_cream_soda"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
