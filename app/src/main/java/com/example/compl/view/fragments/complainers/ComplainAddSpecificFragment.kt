@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -46,17 +45,17 @@ class ComplainAddSpecificFragment : Fragment() ,ComplainAllAdapter.OnItemClickLi
 
     }
 
+
     override fun onResume() {
         super.onResume()
-        dataFound.postValue(true)
+        dataFound.value=true
+        getSpecificDataAndManageRecyclerView()
     }
 
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        getSpecificDataAndManageRecyclerView()
 
         binding.complainAddSpecificFab.setOnClickListener {
             addSpecificComplain(specific)
@@ -74,10 +73,11 @@ class ComplainAddSpecificFragment : Fragment() ,ComplainAllAdapter.OnItemClickLi
         binding.complainAddSpecificRecyclerView.adapter=adapter
         binding.complainAddSpecificRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        complainViewModel.getSpecificComplain(specific)
+        complainViewModel.getSpecificComplain(specific,null,null)
+
         complainViewModel.specificComplainData.observe(viewLifecycleOwner,{
             it?.let {
-                if(it.isNullOrEmpty())
+                if(it.isEmpty())
                     dataFound.postValue(false)
                 else{
                     specificTypeComplainData=it
@@ -119,10 +119,26 @@ class ComplainAddSpecificFragment : Fragment() ,ComplainAllAdapter.OnItemClickLi
     override fun OnItemClick(position: Int) {
 
         val clickedComplain:Complaindata=specificTypeComplainData[position]
-        Toast.makeText(requireContext(),clickedComplain.title, Toast.LENGTH_SHORT).show()
 
         //TODO: Edit Specific Complain
 
+        val id=clickedComplain.id
+
+        goToSpecificComplainFragment(id)
+
+    }
+
+    private fun goToSpecificComplainFragment(id:String) {
+
+        val ldf = ComplainEditFragment()
+        val args = Bundle()
+        args.putString("id", id)
+        ldf.arguments = args
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.complain_fragment_view, ldf)
+            .addToBackStack(null)
+            .commit()
     }
 
 
@@ -138,8 +154,5 @@ class ComplainAddSpecificFragment : Fragment() ,ComplainAllAdapter.OnItemClickLi
             .addToBackStack(null)
             .commit()
     }
-
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.example.compl.view.fragments.complainers
+package com.example.compl.view.fragments.authority
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -14,22 +14,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import com.example.compl.R
 import com.example.compl.application.ComplainApplication
 import com.example.compl.databinding.DialogCustomLoadingBinding
-import com.example.compl.databinding.FragmentComplainAccountPageBinding
-import com.example.compl.model.ComplainUser
+import com.example.compl.databinding.FragmentAuthorityAccountPageBinding
+import com.example.compl.model.AuthorityUser
 import com.example.compl.util.OfflineData
 import com.example.compl.view.activities.SplashActivity
-import com.example.compl.viewmodel.ComplainViewModel
-import com.example.compl.viewmodel.ComplainViewModelFactory
-import com.example.compl.viewmodel.LoginSignupViewModel
-import com.example.compl.viewmodel.LoginSignupViewModelFactory
+import com.example.compl.viewmodel.*
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -37,22 +33,22 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.theartofdev.edmodo.cropper.CropImage
 
-class ComplainAccountPageFragment : Fragment() {
+class AuthorityAccountPageFragment : Fragment() {
 
-    private lateinit var mBinding:FragmentComplainAccountPageBinding
-    private val complainViewModel: ComplainViewModel by viewModels{
-        ComplainViewModelFactory((requireActivity().application as ComplainApplication).repository)
+    private lateinit var binding:FragmentAuthorityAccountPageBinding
+    private lateinit var dialog:Dialog
+
+    private val authViewModelFactory: AuthorityViewModel by viewModels{
+        AuthorityViewModelFactory((requireActivity().application as ComplainApplication).repository)
     }
     private val loginSignupViewModel: LoginSignupViewModel by viewModels {
         LoginSignupViewModelFactory((requireActivity().application as ComplainApplication).repository)
     }
 
     private var imageSelected: Uri? =null
-    private var imageUrl:String=DEFAULT_IMAGE
+    private var imageUrl:String= DEFAULT_IMAGE
     private var imageUploadedOperationCount:Int=0
-    private var imageUploadedLiveData:MutableLiveData<Int> = MutableLiveData<Int>()
-    private lateinit var dialog:Dialog
-
+    private var imageUploadedLiveData: MutableLiveData<Int> = MutableLiveData<Int>()
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>(){
         override fun createIntent(context: Context, input: Any?): Intent {
@@ -71,27 +67,28 @@ class ComplainAccountPageFragment : Fragment() {
     private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
 
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
+        this.binding = FragmentAuthorityAccountPageBinding.inflate(inflater,container,false)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-
-        mBinding= FragmentComplainAccountPageBinding.inflate(inflater,container,false)
-        return mBinding.root
+        return this.binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.complainAccountLogOutBtn.setOnClickListener {
+        this.binding.authorityAccountLogOutBtn.setOnClickListener {
             loginSignupViewModel.logout().invokeOnCompletion {
-
 
                 OfflineData(requireActivity()).run {
                     putLoginType(null)
                 }
 
-                finishAffinity(requireActivity())
+                ActivityCompat.finishAffinity(requireActivity())
 
                 val i = Intent(requireContext(), SplashActivity::class.java)
                 startActivity(i)
@@ -100,12 +97,12 @@ class ComplainAccountPageFragment : Fragment() {
 
         cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract){
             it?.let {
-                mBinding.complainAccountImageView.setImageURI(it)
+                this.binding.authorityAccountImageView.setImageURI(it)
                 imageSelected=it
             }
         }
 
-        mBinding.complainAccountFloatingActionBtn.setOnClickListener {
+        this.binding.authorityAccountFloatingActionBtn.setOnClickListener {
             if(checkPermissionForCameraAndGallery()) {
                 cropActivityResultLauncher.launch(null)
             }
@@ -114,7 +111,7 @@ class ComplainAccountPageFragment : Fragment() {
             }
         }
 
-        mBinding.complainAccountSaveDataBtn.setOnClickListener {
+        this.binding.authorityAccountSaveDataBtn.setOnClickListener {
 
 
             showLoadingDialogBox(true)
@@ -122,16 +119,16 @@ class ComplainAccountPageFragment : Fragment() {
             if(imageSelected!=null){
                 val type= OfflineData(requireActivity()).getLoginType()
 
-                complainViewModel.uploadImage(imageSelected,type!!,"profile")
+                authViewModelFactory.uploadImage(imageSelected,type!!,"profile")
 
             }
 
-            complainViewModel.uploadImageError.observe(viewLifecycleOwner,{
+            authViewModelFactory.uploadImageError.observe(viewLifecycleOwner,{
                 it?.let { error->
                     if(error=="successful"){
                         imageUploadedLiveData.postValue(++imageUploadedOperationCount)
                         Toast.makeText(requireContext(), "Image upload $error",Toast.LENGTH_SHORT).show()
-                        complainViewModel.uploadImageUrl.observe(viewLifecycleOwner,{ url->
+                        authViewModelFactory.uploadImageUrl.observe(viewLifecycleOwner,{ url->
                             url?.let {
                                 imageUrl=url
                                 Log.d("raj","Image url $url")
@@ -152,35 +149,39 @@ class ComplainAccountPageFragment : Fragment() {
             })
         }
 
+
     }
 
+
+
     private fun uploadUserData(){
+
         Log.d("raj","Uploading data")
-        val name=mBinding.complainAccountName.text.toString()
-        val email=mBinding.complainAccountEmail.text.toString()
-        val mobileNumber=mBinding.complainAccountPhoneNumber.text.toString()
+        val name= this.binding.authorityAccountName.text.toString()
+        val email= this.binding.authorityAccountEmail.text.toString()
+        val mobileNumber= this.binding.authorityAccountPhoneNumber.text.toString()
 
-        if(imageUrl!=DEFAULT_IMAGE){
+        if(imageUrl!= DEFAULT_IMAGE){
 
-            complainViewModel.updateComplainUser(ComplainUser(name,email,mobileNumber,imageUrl))
+            authViewModelFactory.updateAuthorityUser(AuthorityUser(name,email,mobileNumber,imageUrl,""))
 
-            complainViewModel.getComplainUser()
+            authViewModelFactory.getAuthorityUser()
 
-            complainViewModel.complainUserData.observe(viewLifecycleOwner, {
+            authViewModelFactory.authorityUserData.observe(viewLifecycleOwner, {
                 if(it!=null){
                     OfflineData(requireActivity()).putUserInfoSet(true)
                 }
             })
 
-            complainViewModel.complainUserError.observe(viewLifecycleOwner, {
+            authViewModelFactory.userError.observe(viewLifecycleOwner, {
                 it?.let{
                     showLoadingDialogBox(false)
                     if(it=="SuccessFull"){
-                        Toast.makeText(requireContext(),"SuccessFully Updated Data",Toast.LENGTH_SHORT).show()
-                        mBinding.complainAccountName.text.clear()
-                        mBinding.complainAccountEmail.text.clear()
-                        mBinding.complainAccountPhoneNumber.text.clear()
-                        mBinding.complainAccountImageView.setImageResource(R.drawable.ic_baseline_perm_identity_24)
+                        Toast.makeText(requireContext(),"SuccessFully Updated Data", Toast.LENGTH_SHORT).show()
+                        this.binding.authorityAccountName.text.clear()
+                        this.binding.authorityAccountEmail.text.clear()
+                        this.binding.authorityAccountPhoneNumber.text.clear()
+                        this.binding.authorityAccountImageView.setImageResource(R.drawable.ic_baseline_perm_identity_24)
                     }
                 }
             })
@@ -188,13 +189,17 @@ class ComplainAccountPageFragment : Fragment() {
 
     }
 
+
+
+
+
     private fun showLoadingDialogBox(visible:Boolean) {
         if(!visible) {
             dialog.dismiss()
             return
         }
-        dialog=Dialog(requireContext())
-        val binding:DialogCustomLoadingBinding = DialogCustomLoadingBinding.inflate(layoutInflater)
+        dialog= Dialog(requireContext())
+        val binding: DialogCustomLoadingBinding = DialogCustomLoadingBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
         dialog.show()
 
@@ -234,23 +239,23 @@ class ComplainAccountPageFragment : Fragment() {
     }
     private fun showRationalDialogForPermission() {
         AlertDialog.Builder(requireContext()).setMessage("It looks like you turned Off permission require for this feature.It can be enabled under Application Settings")
-                .setPositiveButton("GO TO SETTINGS"){
+            .setPositiveButton("GO TO SETTINGS"){
                     _,_->
-                    try{
-                        val intent=Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        val uri= Uri.fromParts("package",
-                                activity?.packageName,
-                                null)
-                        intent.data=uri
-                        startActivity(intent)
-                    }
-                    catch (e:ActivityNotFoundException){
-                        e.printStackTrace()
-                    }
-                }.setNegativeButton("Cancel"){
+                try{
+                    val intent=Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri= Uri.fromParts("package",
+                        activity?.packageName,
+                        null)
+                    intent.data=uri
+                    startActivity(intent)
+                }
+                catch (e: ActivityNotFoundException){
+                    e.printStackTrace()
+                }
+            }.setNegativeButton("Cancel"){
                     dialog,_->
-                    dialog.dismiss()
-                }.show()
+                dialog.dismiss()
+            }.show()
     }
 
     companion object{

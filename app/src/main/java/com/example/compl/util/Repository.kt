@@ -3,12 +3,15 @@ package com.example.compl.util
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.example.compl.firebase.FirebaseSource
+import com.example.compl.model.AuthorityUser
 import com.example.compl.model.ComplainUser
 import com.example.compl.model.Complaindata
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
 
 class Repository(private val firebase:FirebaseSource) {
+
+    fun logout() = firebase.logout()
 
     fun register(email:String,password:String)=firebase.register(email,password)
 
@@ -22,6 +25,10 @@ class Repository(private val firebase:FirebaseSource) {
 
     fun getComplainUser()=firebase.getComplainUser()
 
+    fun updateAuthorityUser(authorityUser: AuthorityUser)=firebase.updateAuthorityUser(authorityUser)
+
+    fun getAuthorityUser()=firebase.getAuthorityUser()
+
     fun uploadImage(file: Uri?, type:String,branch:String)=firebase.upLoadImage(file, type,branch)
 
 
@@ -29,11 +36,13 @@ class Repository(private val firebase:FirebaseSource) {
 
     fun getAllComplains()=firebase.getAllComplains()
 
-    fun getSpecificComplain(type: String)=firebase.getSpecificComplain(type)
+    fun getSpecificComplain(type: String?,id:String?,uid:String?)=firebase.getSpecificComplain(type,id,uid)
+
+    fun editSpecificComplain(id: String,complain: Complaindata) = firebase.editSpecificComplain(id, complain)
 
     private val currentUser = firebase.getCurrentUser()
     private val error = firebase.getError()
-    private val complainUserData=firebase.getComplainUserData()
+    private val userData=firebase.getUserData()
     private val complainUserError=firebase.getUserError()
     private val uploadImageError=firebase.getUploadImageError()
     private val uploadImageUrl=firebase.getUploadImageUrl()
@@ -42,14 +51,15 @@ class Repository(private val firebase:FirebaseSource) {
     private val specificComplainsData = firebase.getSpecificComplainsData()
 
 
+
     fun getCurrentUser(): MutableLiveData<FirebaseUser?> = currentUser
     fun getError():MutableLiveData<String> = error
-    fun getComplainUserData():MutableLiveData<ComplainUser?> = complainUserData
+    fun getUserData():MutableLiveData<ComplainUser?> = userData
     fun getComplainUserError():MutableLiveData<String> = complainUserError
     fun getUploadImageError():MutableLiveData<String?> = uploadImageError
     fun getUploadImageUrl():MutableLiveData<String?> = uploadImageUrl
     fun getAddComplainUploadedError():MutableLiveData<String?> = complainAddUploadedError
     fun getAllComplainsData():MutableLiveData<MutableList<Complaindata>?> = allComplainsData
-    fun getSpecificComplainsData():MutableLiveData<MutableList<Complaindata>> = specificComplainsData
+    fun getSpecificComplainsData():MutableLiveData<MutableList<Complaindata>?> = specificComplainsData
 
 }

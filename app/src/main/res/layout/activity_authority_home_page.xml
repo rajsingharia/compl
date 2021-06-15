@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/drawerLayoutComplain"
+    android:id="@+id/DrawerLayoutAuthority"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activities.complainer.ComplainHomePage"
+    tools:context=".view.activities.authority.AuthorityHomePage"
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,18 +15,18 @@
         android:layout_height="match_parent">
 
         <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/complain_fragment_view"
-            android:name="com.example.compl.view.fragments.complainers.ComplainHomeFragment"
+            android:id="@+id/authority_fragment_view"
+            android:name="com.example.compl.view.fragments.authority.AuthorityHomeFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/complain_toolbar" >
+            app:layout_constraintTop_toBottomOf="@+id/authority_toolbar" >
 
         </androidx.fragment.app.FragmentContainerView>
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/complain_toolbar"
+            android:id="@+id/authority_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00FFFFFF"
@@ -40,10 +40,10 @@
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/complain_nav_view"
+        android:id="@+id/authority_nav_view"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_menu_header"
-        app:menu="@menu/main_menu">
+        app:menu="@menu/authority_main_menu">
 
     </com.google.android.material.navigation.NavigationView>
 

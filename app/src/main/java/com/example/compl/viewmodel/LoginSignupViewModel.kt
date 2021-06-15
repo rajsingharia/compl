@@ -3,6 +3,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.compl.model.Complaindata
 import com.example.compl.util.Repository
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseUser
@@ -10,6 +11,10 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class LoginSignupViewModel(private val repository: Repository) :ViewModel() {
+
+    fun logout() = viewModelScope.launch {
+        repository.logout()
+    }
 
     fun register(email:String,password:String)=viewModelScope.launch {
         repository.register(email,password)
@@ -29,6 +34,8 @@ class LoginSignupViewModel(private val repository: Repository) :ViewModel() {
     fun findLoggedInOrNot()=viewModelScope.launch {
         repository.findLoggedInOrNot()
     }
+
+
 
 
     var currentUser:MutableLiveData<FirebaseUser?> = repository.getCurrentUser()

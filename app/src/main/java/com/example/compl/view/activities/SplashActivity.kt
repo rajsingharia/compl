@@ -2,12 +2,11 @@ package com.example.compl.view.activities
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -16,11 +15,9 @@ import com.example.compl.R
 import com.example.compl.application.ComplainApplication
 import com.example.compl.databinding.ActivitySplashBinding
 import com.example.compl.util.OfflineData
+import com.example.compl.view.activities.authority.AuthorityHomePage
 import com.example.compl.view.activities.complainer.ComplainHomePage
-import com.example.compl.viewmodel.ComplainViewModel
-import com.example.compl.viewmodel.ComplainViewModelFactory
-import com.example.compl.viewmodel.LoginSignupViewModel
-import com.example.compl.viewmodel.LoginSignupViewModelFactory
+import com.example.compl.viewmodel.*
 
 class SplashActivity : AppCompatActivity() {
 
@@ -28,8 +25,13 @@ class SplashActivity : AppCompatActivity() {
         LoginSignupViewModelFactory((application as ComplainApplication).repository)
     }
 
+
     private val complainViewModel: ComplainViewModel by viewModels{
-        ComplainViewModelFactory((this.application as ComplainApplication).repository)
+        ComplainViewModelFactory((application as ComplainApplication).repository)
+    }
+
+    private val authorityViewModel: AuthorityViewModel by viewModels{
+        AuthorityViewModelFactory((this.application as ComplainApplication).repository)
     }
 
     private val showSplashScreen :MutableLiveData<Boolean> = MutableLiveData()
@@ -37,8 +39,10 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var splashBinding:ActivitySplashBinding
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         loginSignupViewModel.findLoggedInOrNot()
+        showSplashScreen.postValue(true)
         super.onCreate(savedInstanceState)
         splashBinding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(splashBinding.root)
@@ -81,51 +85,131 @@ class SplashActivity : AppCompatActivity() {
 
         //-->>
 
+        findLastUserType()
 
-        complainViewModel.getComplainUser().invokeOnCompletion {
-            complainViewModel.getAllComplains().invokeOnCompletion {
-                showSplashScreen.postValue(false)
+
+        showSplashScreen.observe(this,{
+            Log.d("raj", "splash screen ->$it")
+                if(it==false){
+                    val type = OfflineData(this).getLoginType()
+
+                    if(type==null){
+                        Toast.makeText(this,"Type Missing\nContact Administration",Toast.LENGTH_SHORT).show()
+                    }
+
+                    if (type != null && type == "com") {
+
+                        Log.d("Raj", "User verified and going to home page")
+                        val intent = Intent(this@SplashActivity, ComplainHomePage::class.java)
+                        startActivity(intent)
+                        finish()
+
+                    } else if (type != null && type == "auth") {
+
+                        Toast.makeText(this,"Authorised entry",Toast.LENGTH_SHORT).show()
+                        finishAffinity()
+                       val intent = Intent(this@SplashActivity, AuthorityHomePage::class.java)
+
+                        startActivity(intent)
+                        finish()
+
+                    }
+                }
+        })
+    }
+
+    private fun findLastUserType() {
+
+        when(OfflineData(this).getLoginType()){
+            "auth" -> {
+                getAuthUserDetails()
+            }
+            "com" -> {
+                getComUserDetails()
+            }
+            else -> {
+                startActivity((Intent(this@SplashActivity, MainActivity::class.java)))
+                finish()
             }
         }
 
-        showSplashScreen.observe(this,{
-            it?.let {
-                if(!it){
-                    val type = OfflineData(this).getLoginType()
+    }
 
-                    loginSignupViewModel.currentUser.observe(this, {
-                        it.let {
+    private fun getComUserDetails() {
 
-                            Log.d("raj", type.toString()+"  -- user-> "+it.toString())
+        Log.d("raj","user is com")
 
-                            if (it == null) {
-
-                                startActivity((Intent(this@SplashActivity, MainActivity::class.java)))
-                                finish()
-
-                            }
-                            if (it != null && type != null && type == "com") {
-
-                                Log.d("Raj", "User verified and going to home page")
-
-                                val intent = Intent(this@SplashActivity, ComplainHomePage::class.java)
-
-                                startActivity(intent)
-                                finish()
-
-                            } else if (it != null && type != null && type == "auth") {
-
-                                val intent = Intent(this@SplashActivity, ComplainHomePage::class.java)
-
-                                startActivity(intent)
-                                finish()
-
-                            }
-
-                        }
-                    })
-                }
+        loginSignupViewModel.currentUser.observe(this,{ user->
+            if(user==null){
+                startActivity((Intent(this@SplashActivity, MainActivity::class.java)))
+                finish()
             }
+            else{
+                if(complainViewModel.complainUserData.value==null && complainViewModel.allComplainsData.value==null) {
+                    Log.d("raj","com user data is null")
+                    complainViewModel.getComplainUser()
+                    complainViewModel.getAllComplains()
+                }
+
+
+                complainViewModel.complainUserData.observe(this,{ userdata->
+                    userdata?.let {
+                        complainViewModel.allComplainsData.observe(this,{
+                            it?.let {
+                                showSplashScreen.postValue(false)
+                            }
+                        })
+                    }
+                })
+
+                complainViewModel.complainUserError.observe(this,{
+                    it?.let{
+                        Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+            }
+
         })
+
+    }
+
+    private fun getAuthUserDetails() {
+
+        Log.d("raj","user is auth")
+
+        loginSignupViewModel.currentUser.observe(this,{ user->
+            if(user==null){
+                startActivity((Intent(this@SplashActivity, MainActivity::class.java)))
+                finish()
+            }
+            else{
+                if(authorityViewModel.authorityUserData.value==null && complainViewModel.allComplainsData.value==null) {
+                    Log.d("raj","getting auth user data")
+                    authorityViewModel.getAuthorityUser()
+                    complainViewModel.getAllComplains()
+                }
+
+                authorityViewModel.authorityUserData.observe(this,{ userdata->
+                    userdata?.let {
+                        Log.d("raj","got user data")
+                        complainViewModel.allComplainsData.observe(this,{
+                            it?.let {
+                                showSplashScreen.postValue(false)
+                            }
+                        })
+                    }
+
+                })
+
+                authorityViewModel.userError.observe(this,{
+                    it?.let{
+                        Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+
+        })
+
     }
 }

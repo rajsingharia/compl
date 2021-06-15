@@ -19,6 +19,8 @@ import com.example.compl.view.fragments.complainers.ComplainAllFragment
 import com.example.compl.view.fragments.complainers.ComplainHomeFragment
 import com.example.compl.viewmodel.ComplainViewModel
 import com.example.compl.viewmodel.ComplainViewModelFactory
+import com.example.compl.viewmodel.LoginSignupViewModel
+import com.example.compl.viewmodel.LoginSignupViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.mikhaellopez.circularimageview.CircularImageView
 
@@ -29,6 +31,11 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
     private val complainViewModel: ComplainViewModel by viewModels{
         ComplainViewModelFactory((this.application as ComplainApplication).repository)
     }
+
+    private val loginSignupViewModel: LoginSignupViewModel by viewModels {
+        LoginSignupViewModelFactory((application as ComplainApplication).repository)
+    }
+
     private var currentFragment: Fragment?=null
 
     override fun onStart() {
@@ -43,29 +50,29 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
         mBinding= ActivityComplainHomePageBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(mBinding.complainToolbar)
 
         val actionbar=supportActionBar
         actionbar?.title="Compl"
 
         actionbar?.setDisplayHomeAsUpEnabled(true)
 
-        toggle = ActionBarDrawerToggle(this, mBinding.drawerLayout, R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(this, mBinding.drawerLayoutComplain, R.string.open,R.string.close)
 
         toggle.isDrawerIndicatorEnabled = true
 
-        mBinding.drawerLayout.addDrawerListener(toggle)
+        mBinding.drawerLayoutComplain.addDrawerListener(toggle)
 
         toggle.syncState()
 
-        mBinding.navView.setNavigationItemSelectedListener (this)
+        mBinding.complainNavView.setNavigationItemSelectedListener (this)
 
 
     }
 
     private fun setUpNavHeadData() {
 
-            val navView = mBinding.navView
+            val navView = mBinding.complainNavView
 
             val navHeadView = navView.getHeaderView(0)
 
@@ -120,10 +127,38 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
                         .commit()
 
                 }
-                R.id.menu_nav_my_complaints -> Toast.makeText(this,"My Complaint",Toast.LENGTH_SHORT).show()
+                R.id.menu_nav_my_complaints -> {
+
+                    val uid: String? = loginSignupViewModel.currentUser.value?.uid
+
+                    if(uid!=null){
+                        val ldf = ComplainAllFragment()
+                        val args = Bundle()
+                        args.putString("uid", uid)
+                        ldf.arguments = args
+
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.complain_fragment_view, ldf,"ComplainAllFragment")
+                            .addToBackStack(null)
+                            .commit()
+                    }else{
+                        Toast.makeText(this,"unable to find user",Toast.LENGTH_SHORT).show()
+                    }
+
+
+
+                }
                 R.id.menu_nav_all_complaints -> {
 
-                    replaceFragment(ComplainAllFragment(),"ComplainAllFragment")
+                    val ldf = ComplainAllFragment()
+                    val args = Bundle()
+                    args.putString("uid", null)
+                    ldf.arguments = args
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.complain_fragment_view, ldf,"ComplainAllFragment")
+                        .addToBackStack(null)
+                        .commit()
 
                 }
                 R.id.menu_nav_account -> {
@@ -134,7 +169,7 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
                 R.id.menu_nav_share -> Toast.makeText(this,"Share",Toast.LENGTH_SHORT).show()
                 R.id.menu_nav_rate_us -> Toast.makeText(this,"Rate Us",Toast.LENGTH_SHORT).show()
              }
-        mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        mBinding.drawerLayoutComplain.closeDrawer(GravityCompat.START)
         return true
     }
 

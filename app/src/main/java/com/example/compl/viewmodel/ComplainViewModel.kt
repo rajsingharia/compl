@@ -34,17 +34,21 @@ class ComplainViewModel(private val repository: Repository) :ViewModel() {
         repository.getAllComplains()
     }
 
-    fun getSpecificComplain(type: String) = viewModelScope.launch {
-        repository.getSpecificComplain(type)
+    fun getSpecificComplain(type: String?,id:String?,uid:String?) = viewModelScope.launch {
+        repository.getSpecificComplain(type,id,uid)
     }
 
-    var complainUserData: MutableLiveData<ComplainUser?> = repository.getComplainUserData()
+    fun editSpecificComplain(id:String, complainData: Complaindata) =viewModelScope.launch {
+        repository.editSpecificComplain(id,complainData)
+    }
+
+    var complainUserData: MutableLiveData<ComplainUser?> = repository.getUserData()
     var complainUserError:MutableLiveData<String> = repository.getComplainUserError()
     var uploadImageError:MutableLiveData<String?> = repository.getUploadImageError()
     var uploadImageUrl:MutableLiveData<String?> = repository.getUploadImageUrl()
     var complainAddUploadedError:MutableLiveData<String?> = repository.getAddComplainUploadedError()
     var allComplainsData:MutableLiveData<MutableList<Complaindata>?> = repository.getAllComplainsData()
-    var specificComplainData:MutableLiveData<MutableList<Complaindata>> = repository.getSpecificComplainsData()
+    var specificComplainData:MutableLiveData<MutableList<Complaindata>?> = repository.getSpecificComplainsData()
 
 }
 

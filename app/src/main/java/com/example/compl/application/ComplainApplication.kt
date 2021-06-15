@@ -5,12 +5,12 @@ import com.example.compl.util.Repository
 
 class ComplainApplication :Application() {
 
-    private val firebasesource by lazy {
+    private val firebaseSource by lazy {
         FirebaseSource()
     }
 
     val repository by lazy {
-        Repository(firebasesource)
+        Repository(firebaseSource)
     }
 
 }

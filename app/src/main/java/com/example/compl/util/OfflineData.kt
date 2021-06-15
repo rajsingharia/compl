@@ -12,7 +12,7 @@ class OfflineData(activity: Activity) {
 
     private val editor:SharedPreferences.Editor =  sharedPreferences.edit()
 
-    fun putLoginType(x:String){
+    fun putLoginType(x:String?){
         editor.putString("type",x)
         editor.apply()
         editor.commit()

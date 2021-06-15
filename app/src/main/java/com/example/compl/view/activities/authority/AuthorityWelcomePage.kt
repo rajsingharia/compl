@@ -1,4 +1,5 @@
-package com.example.compl.view.activities.complainer
+package com.example.compl.view.activities.authority
+
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +12,10 @@ import androidx.activity.viewModels
 import com.example.compl.R
 import com.example.compl.adapter.ViewPagerAdapter
 import com.example.compl.application.ComplainApplication
-import com.example.compl.databinding.ActivityComplainWelcomePageBinding
+import com.example.compl.databinding.ActivityAuthorityWelcomePageBinding
 import com.example.compl.util.OfflineData
-import com.example.compl.view.fragments.complainers.ComplainLoginTabFragment
-import com.example.compl.view.fragments.complainers.ComplainSignupTabFragment
+import com.example.compl.view.fragments.authority.AuthorityLoginTabFragment
+import com.example.compl.view.fragments.authority.AuthoritySignupTabFragment
 import com.example.compl.viewmodel.LoginSignupViewModel
 import com.example.compl.viewmodel.LoginSignupViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -25,51 +26,50 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.GoogleAuthProvider
 
-class ComplainWelcomePage : AppCompatActivity() {
-
-    private lateinit var mBinding:ActivityComplainWelcomePageBinding
+class AuthorityWelcomePage : AppCompatActivity() {
+    private lateinit var binding: ActivityAuthorityWelcomePageBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     companion object {
-        private const val RC_SIGN_IN=123
+        private const val RC_SIGN_IN=345
     }
-    private val loginSignupViewModel:LoginSignupViewModel by viewModels{
+    private val loginSignupViewModel: LoginSignupViewModel by viewModels{
         LoginSignupViewModelFactory((application as ComplainApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        Log.d("Raj","welcome page")
+        Log.d("Raj","welcome authority page")
 
         super.onCreate(savedInstanceState)
-        mBinding=ActivityComplainWelcomePageBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        binding= ActivityAuthorityWelcomePageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         }else{
             //For Other devices
             window.setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
 
         val fragmentList= arrayListOf(
-                ComplainLoginTabFragment(),
-                ComplainSignupTabFragment()
+            AuthorityLoginTabFragment(),
+            AuthoritySignupTabFragment()
         )
 
         val fragmentListTitle= arrayListOf(
-                "Login",
-                "Sign up"
+            "Login",
+            "Sign up"
         )
 
 
         val adapter= ViewPagerAdapter(fragmentList,this.supportFragmentManager,lifecycle)
 
-        mBinding.viewPager.adapter=adapter
+        binding.authorityViewPager.adapter=adapter
 
-        TabLayoutMediator(mBinding.tabLayout,mBinding.viewPager){tab,pos->
+        TabLayoutMediator(binding.authorityTabLayout,binding.authorityViewPager){ tab, pos->
             tab.text= fragmentListTitle[pos]
         }.attach()
 
@@ -81,8 +81,8 @@ class ComplainWelcomePage : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        mBinding.fabGoogle.setOnClickListener {
-            mBinding.fabGoogleProgress.visibility= View.VISIBLE
+        binding.authorityFabGoogle.setOnClickListener {
+            binding.authorityFabGoogleProgress.visibility= View.VISIBLE
             signIn()
         }
 
@@ -91,22 +91,22 @@ class ComplainWelcomePage : AppCompatActivity() {
 
                 if(it!=null) {
                     //saving offline type
-                    OfflineData(this).putLoginType("com")
+                    OfflineData(this).putLoginType("auth")
 
-
-                    mBinding.fabGoogleProgress.visibility = View.INVISIBLE
-                    Snackbar.make(mBinding.root, "SignIn Successful", Snackbar.LENGTH_SHORT).apply { show() }
-                    val intent = Intent(this, ComplainHomePage::class.java)
+                    binding.authorityFabGoogleProgress.visibility = View.INVISIBLE
+                    Snackbar.make(binding.root, "SignIn Successful", Snackbar.LENGTH_SHORT).apply { show() }
+                    val intent = Intent(this, AuthorityHomePage::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
+                    finish()
                 }
             }
         })
 
         loginSignupViewModel.error.observe(this,{
             it?.let {
-                Snackbar.make(mBinding.root,it.toString(), Snackbar.LENGTH_SHORT).apply { show() }
-                mBinding.fabGoogleProgress.visibility= View.INVISIBLE
+                Snackbar.make(binding.root,it, Snackbar.LENGTH_SHORT).apply { show() }
+                binding.authorityFabGoogleProgress.visibility= View.INVISIBLE
             }
         })
 
@@ -128,13 +128,13 @@ class ComplainWelcomePage : AppCompatActivity() {
                     val account = task.getResult(ApiException::class.java)!!
                     firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: ApiException) {
-                    Snackbar.make(mBinding.root, "Google sign in failed :$e", Snackbar.LENGTH_SHORT).apply { show() }
-                    mBinding.fabGoogleProgress.visibility= View.INVISIBLE
+                    Snackbar.make(binding.root, "Google sign in failed :$e", Snackbar.LENGTH_SHORT).apply { show() }
+                    binding.authorityFabGoogleProgress.visibility= View.INVISIBLE
                 }
             }
             else{
-                Snackbar.make(mBinding.root,exception?.message.toString(), Snackbar.LENGTH_SHORT).apply { show() }
-                mBinding.fabGoogleProgress.visibility = View.INVISIBLE
+                Snackbar.make(binding.root,exception?.message.toString(), Snackbar.LENGTH_SHORT).apply { show() }
+                binding.authorityFabGoogleProgress.visibility = View.INVISIBLE
             }
         }
     }
@@ -143,5 +143,4 @@ class ComplainWelcomePage : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         loginSignupViewModel.signInWithGoogle(credential)
     }
-
 }

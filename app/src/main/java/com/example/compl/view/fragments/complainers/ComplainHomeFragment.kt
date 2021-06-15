@@ -33,7 +33,6 @@ class ComplainHomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        complainViewModel.getAllComplains()
         pieData= MutableList(6){0}
     }
 

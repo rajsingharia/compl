@@ -19,15 +19,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:background="@drawable/login_signup_btn_bgd"
-        android:textColor="@color/white"
         android:id="@+id/compl_login_signup_btn"
+        android:layout_marginTop="300dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/login_signup_btn_bgd"
         android:text="Complain"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome_heading" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/auth_login_signup_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/login_signup_btn_bgd"
+        android:text="Authority"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/compl_login_signup_btn"
+        app:layout_constraintStart_toStartOf="@+id/compl_login_signup_btn"
+        app:layout_constraintTop_toBottomOf="@+id/compl_login_signup_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

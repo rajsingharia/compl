@@ -76,15 +76,19 @@ class ComplainAllAdapter(val listener:OnItemClickListener): RecyclerView.Adapter
         holder.itemView.apply {
             rowTitle.text=data.title
             rowDescription.text=data.description
-            Glide.with(this).load(data.imageUrl).into(rowImageView)
+            Glide.with(this)
+                .load(data.imageUrl)
+                .placeholder(R.drawable.ic_baseline_perm_identity_24)
+                .error(R.mipmap.error)
+                .into(rowImageView)
 
             rowStatus.text=data.resolvedStatus
 
             when(data.resolvedStatus){
-                "open" -> {
+                "Completed" -> {
                     rowStatus.setTextColor(Color.parseColor("#00FF00"))
                 }
-                "close" -> {
+                "Close" -> {
                     rowStatus.setTextColor(Color.parseColor("#ff0000"))
                 }
                 else -> {

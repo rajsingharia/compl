@@ -13,6 +13,18 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/complain_account_log_out_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/login_signup_btn_bgd"
+            android:text="Log Out"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
         <ImageView
             android:id="@+id/complain_account_image_view"
             android:layout_width="250dp"

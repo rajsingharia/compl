@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+        android:checkable="true">
+
+        <item
+            android:checked="true"
+            android:id="@+id/authority_menu_nav_home"
+            android:title="Home"
+            />
+        <item
+            android:id="@+id/authority_menu_nav_all_complaints"
+            android:title="All Complaints"
+            />
+        <item
+            android:id="@+id/authority_menu_nav_account"
+            android:title="Account"
+            />
+        <item
+            android:id="@+id/authority_menu_nav_share"
+            android:title="Share"
+            />
+        <item
+            android:id="@+id/authority_menu_nav_rate_us"
+            android:title="Rate Us"
+            />
+    </group>
+</menu>
