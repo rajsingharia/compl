@@ -14,6 +14,8 @@
     <string name="select_type_of_image_to_be_uploaded">Select Type Of Image To be Uploaded</string>
     <string name="first_type">Type A</string>
     <string name="pie_char">Over View</string>
+    <string name="tap_for_more"><![CDATA[Tap For More >]]></string>
+    <string name="management">Management</string>
     <string-array name="type">
         <item>Type A</item>
         <item>Type B</item>

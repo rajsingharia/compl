@@ -19,7 +19,7 @@ class OfflineData(activity: Activity) {
     }
 
     val type=sharedPreferences.getString("type",null)
-    val userInfo:Boolean=sharedPreferences.getBoolean("userInfo",false)
+    private val userInfo:Boolean=sharedPreferences.getBoolean("userInfo",false)
 
     fun getLoginType():String?{
         return type

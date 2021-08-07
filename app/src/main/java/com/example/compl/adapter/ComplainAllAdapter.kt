@@ -85,10 +85,10 @@ class ComplainAllAdapter(val listener:OnItemClickListener): RecyclerView.Adapter
             rowStatus.text=data.resolvedStatus
 
             when(data.resolvedStatus){
-                "Completed" -> {
+                "completed" -> {
                     rowStatus.setTextColor(Color.parseColor("#00FF00"))
                 }
-                "Close" -> {
+                "close" -> {
                     rowStatus.setTextColor(Color.parseColor("#ff0000"))
                 }
                 else -> {

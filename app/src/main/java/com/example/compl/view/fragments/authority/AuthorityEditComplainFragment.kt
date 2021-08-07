@@ -22,7 +22,7 @@ import com.example.compl.viewmodel.ComplainViewModelFactory
 class AuthorityEditComplainFragment : Fragment() {
 
     private lateinit var binding:FragmentAuthorityEditComplainBinding
-    private val dropDownList = arrayOf("Close","Under Process","Completed")
+    private val dropDownList = arrayOf("close","under process","completed")
     private val complainViewModel: ComplainViewModel by viewModels {
         ComplainViewModelFactory((requireActivity().application as ComplainApplication).repository)
     }

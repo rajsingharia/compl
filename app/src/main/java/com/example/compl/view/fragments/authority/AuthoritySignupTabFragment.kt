@@ -1,5 +1,6 @@
 package com.example.compl.view.fragments.authority
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.compl.application.ComplainApplication
+import com.example.compl.databinding.DialogCustomLoadingBinding
 import com.example.compl.databinding.FragmentAuthoritySignupTabBinding
 import com.example.compl.util.OfflineData
 import com.example.compl.view.activities.authority.AuthorityHomePage
@@ -23,6 +25,7 @@ class AuthoritySignupTabFragment : Fragment() {
     private val loginSignupViewModel: LoginSignupViewModel by viewModels{
         LoginSignupViewModelFactory((requireActivity().application as ComplainApplication).repository)
     }
+    private lateinit var dialog:Dialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,14 +39,14 @@ class AuthoritySignupTabFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.authoritySignupBtn.setOnClickListener {
             if(checkDetailsValidity()){
-                binding.authoritySignupProgressbar.visibility=View.VISIBLE
+                showLoadingDialogBox(true)
                 val email=binding.authoritySignupEmail.text.toString()
                 val password=binding.authoritySignupConfirmPassword.text.toString()
                 loginSignupViewModel.register(email,password)
 
                 loginSignupViewModel.error.observe(viewLifecycleOwner,{
                     it?.let {
-                        binding.authoritySignupProgressbar.visibility=View.GONE
+                        showLoadingDialogBox(false)
                         Snackbar.make(requireView(),it, Snackbar.LENGTH_SHORT).apply { show() }
                     }
                 })
@@ -55,7 +58,7 @@ class AuthoritySignupTabFragment : Fragment() {
                         OfflineData(requireActivity()).putLoginType("auth")
                         OfflineData(requireActivity()).putUserInfoSet(false)
 
-                        binding.authoritySignupProgressbar.visibility=View.GONE
+                        showLoadingDialogBox(false)
                         Snackbar.make(requireView(),"Registered Successful", Snackbar.LENGTH_SHORT).apply { show() }
                         val intent= Intent(context, AuthorityHomePage::class.java)
                         intent.flags= Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -81,6 +84,17 @@ class AuthoritySignupTabFragment : Fragment() {
             return false
         }
         return true
+    }
+
+    private fun showLoadingDialogBox(visible:Boolean) {
+        if(!visible) {
+            dialog.dismiss()
+            return
+        }
+        dialog= Dialog(requireContext())
+        val binding: DialogCustomLoadingBinding = DialogCustomLoadingBinding.inflate(layoutInflater)
+        dialog.setContentView(binding.root)
+        dialog.show()
     }
 
 }

@@ -274,7 +274,9 @@ class FirebaseSource {
                 complainData.postValue(complainDataList)
             }
 
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("raj","Firebase : ${error}")
+            }
 
         })
 

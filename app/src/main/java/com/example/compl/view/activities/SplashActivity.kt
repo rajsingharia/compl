@@ -66,22 +66,26 @@ class SplashActivity : AppCompatActivity() {
         splashBinding.splashTitleTextComplain.animation = splashAnimationComplain
 
 
+        val splashAnimationRegistration = AnimationUtils.loadAnimation(this, R.anim.splash_anim_registration)
+
+        splashBinding.splashTitleTextRegistration.animation = splashAnimationRegistration
+
 
         val splashAnimationAnd = AnimationUtils.loadAnimation(this, R.anim.splash_anim_and)
 
         splashBinding.splashTitleTextAnd.animation = splashAnimationAnd
 
 
+        val splashAnimationManagement = AnimationUtils.loadAnimation(this, R.anim.splash_anim_management)
 
-        val splashAnimationRegistration = AnimationUtils.loadAnimation(this, R.anim.splash_anim_registration)
-
-        splashBinding.splashTitleTextRegistration.animation = splashAnimationRegistration
-
+        splashBinding.splashTitleTextManagement.animation = splashAnimationManagement
 
 
         val splashAnimationLogo = AnimationUtils.loadAnimation(this, R.anim.splash_anim_logo)
 
         splashBinding.splashComplainLogo.animation = splashAnimationLogo
+
+
 
         //-->>
 
@@ -195,6 +199,7 @@ class SplashActivity : AppCompatActivity() {
                         Log.d("raj","got user data")
                         complainViewModel.allComplainsData.observe(this,{
                             it?.let {
+                                Log.d("raj","Got Complains Data")
                                 showSplashScreen.postValue(false)
                             }
                         })

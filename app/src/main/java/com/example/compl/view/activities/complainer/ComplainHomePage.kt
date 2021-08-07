@@ -123,7 +123,7 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
 
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.complain_fragment_view, ldf,"ComplainAddFragment")
-                        .addToBackStack(null)
+                        //.addToBackStack(null)
                         .commit()
 
                 }
@@ -139,7 +139,7 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
 
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.complain_fragment_view, ldf,"ComplainAllFragment")
-                            .addToBackStack(null)
+                            //.addToBackStack(null)
                             .commit()
                     }else{
                         Toast.makeText(this,"unable to find user",Toast.LENGTH_SHORT).show()
@@ -157,7 +157,7 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
 
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.complain_fragment_view, ldf,"ComplainAllFragment")
-                        .addToBackStack(null)
+                        //.addToBackStack(null)
                         .commit()
 
                 }
@@ -177,19 +177,19 @@ class ComplainHomePage : AppCompatActivity() ,NavigationView.OnNavigationItemSel
 
      private fun replaceFragment(fragment: Fragment,tag:String) {
 
-        if(currentFragment!=null){
+        //if(currentFragment!=null){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.complain_fragment_view, fragment,tag)
                 .commit()
-        }
-
-        else{
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.complain_fragment_view, fragment,tag)
-                    .addToBackStack(null)
-                    .commit()
-
-            currentFragment=fragment
-        }
+        //}
+//
+//        else{
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.complain_fragment_view, fragment,tag)
+//                    .addToBackStack(null)
+//                    .commit()
+//
+//            currentFragment=fragment
+//        }
     }
 }

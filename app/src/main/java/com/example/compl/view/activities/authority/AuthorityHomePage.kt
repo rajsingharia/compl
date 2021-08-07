@@ -33,11 +33,10 @@ class AuthorityHomePage : AppCompatActivity() , NavigationView.OnNavigationItemS
         ComplainViewModelFactory((this.application as ComplainApplication).repository)
     }
 
-    private val loginSignupViewModel: LoginSignupViewModel by viewModels {
-        LoginSignupViewModelFactory((application as ComplainApplication).repository)
-    }
+//    private val loginSignupViewModel: LoginSignupViewModel by viewModels {
+//        LoginSignupViewModelFactory((application as ComplainApplication).repository)
+//    }
 
-    private var currentFragment: Fragment?=null
 
     override fun onStart() {
         super.onStart()
@@ -130,20 +129,20 @@ class AuthorityHomePage : AppCompatActivity() , NavigationView.OnNavigationItemS
 
     private fun replaceFragment(fragment: Fragment,tag:String) {
 
-        if(currentFragment!=null){
+//        if(currentFragment!=null){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.authority_fragment_view, fragment,tag)
                 .commit()
-        }
-
-        else{
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.authority_fragment_view, fragment,tag)
-                .addToBackStack(null)
-                .commit()
-
-            currentFragment=fragment
-        }
+//        }
+//
+//        else{
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.authority_fragment_view, fragment,tag)
+//                .addToBackStack(null)
+//                .commit()
+//
+//            currentFragment=fragment
+//        }
     }
 
 

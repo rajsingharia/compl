@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#E8DF8D"
+    android:background="#D6C2FB"
     android:layout_margin="10dp"
     app:chainUseRtl="true">
 

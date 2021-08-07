@@ -75,7 +75,6 @@ class AuthorityAllComplainFragment : Fragment() , ComplainAllAdapter.OnItemClick
         val binding: DialogCustomLoadingBinding = DialogCustomLoadingBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
         dialog.show()
-
     }
 
     private fun goToSpecificAuthorityEditFragment(id:String) {

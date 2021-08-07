@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#F3E77D"
+    android:background="#2085ec"
     android:gravity="bottom"
     android:orientation="vertical"
     android:layout_height="wrap_content">
@@ -23,7 +23,7 @@
             app:civ_border_width="6dp"
             app:civ_shadow="true"
             app:civ_shadow_radius="10dp"
-            app:civ_shadow_color="#F6A732"/>
+            app:civ_shadow_color="#00175E"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:layout_marginStart="15dp"
         android:fontFamily="@font/cherry_cream_soda"
         android:layout_height="wrap_content"/>
@@ -41,7 +41,7 @@
         android:id="@+id/nav_head_profile_email"
         android:layout_width="match_parent"
         android:textSize="15sp"
-        android:textColor="#4A4A4A"
+        android:textColor="#B6DBF8"
         android:layout_marginBottom="15dp"
         android:layout_marginStart="15dp"
         android:fontFamily="@font/cherry_cream_soda"
