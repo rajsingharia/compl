@@ -2,6 +2,7 @@
 complain registration and management application
 
 FOR AUTHORITSIED OFFICERS:
+
 • Register or login:
 Authority can register or can log in to the application via email and password.
 
@@ -20,6 +21,7 @@ status as the problem goes in different states.
 
 
 FOR GENERAL PUBLIC:
+
 • Register or login :
 Public can register or can log in to the application via email and password.
 
